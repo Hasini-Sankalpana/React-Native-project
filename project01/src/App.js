@@ -13,9 +13,10 @@ function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
-      <Stack.Navigator  initialRouteName='Signup'>
+      <Stack.Navigator>
+       <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}  />
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}  />
-        <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}  />
+      
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}  />
         <Stack.Screen name="Details" component={Details} options={{ headerShown: false }}  />
       </Stack.Navigator>

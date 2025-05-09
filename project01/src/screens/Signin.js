@@ -1,19 +1,55 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
+import {useNavigation} from '@react-navigation/native'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading,setLoading] = useState(false)
+  const navigation = useNavigation()
   
-  const handleSubmit = () => {
-    if (!email || !password || !confirmPassword) {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
+
+    setLoading(true)
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/user/signin',{
+        method:"POST",
+        headers:{
+          'content-type':"application/json"
+        },
+        body:JSON.stringify({
+          email,
+          password
+        })
+      })
+
+      const data = await response.json()
+
+      if(!data.message){
+        console.log(data.message)
+      }
+
+      setEmail('')
+      setPassword('')
+
+      await AsyncStorage.setItem('token',data.token)
+      console.log(data.message)
+
+      navigation.navigate('Home')
+
+    } catch (error) {
+      console.log(error)
+    }finally{
+      setLoading(false)
     }
+    
 
   };
 
@@ -21,7 +57,7 @@ function Signup() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Welcome Back!</Text>
-        <Text style={styles.subtitle}>Sign In to get started</Text>
+        <Text style={styles.subtitle}>Sign In to get started.</Text>
       </View>
 
       <View style={styles.form}>
@@ -45,8 +81,10 @@ function Signup() {
           placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+          <Text style={styles.buttonText}>
+            {loading ? 'Signin...' : 'Sign In'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -56,7 +94,7 @@ function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f9fc',
+    backgroundColor: '#000000',
     padding: 20,
     justifyContent: 'center',
   },
@@ -67,11 +105,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#222',
+    color: '#fff',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#ececec',
     marginTop: 8,
   },
   form: {
@@ -79,30 +117,31 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#333',
+    color: '#fff',
     marginBottom: 2,
     marginLeft:5
   },
   input: {
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
     borderRadius: 10,
     paddingHorizontal: 15,
+    color:'#fff',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#0000',
   },
   button: {
-    backgroundColor: '#077A7D',
+    backgroundColor: '#890a83',
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 40,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
   },
 });
 

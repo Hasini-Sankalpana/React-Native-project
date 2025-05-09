@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import {useNavigation} from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 function Signup() {
+  const [username,setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading,setLoading] = useState(false)
+  const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
     if (!email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
@@ -14,6 +21,42 @@ function Signup() {
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
       return;
+    }
+
+    setLoading(true)
+
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/user/signup',{
+        method:"POST",
+        headers:{
+          'content-type':'application/json'
+        },
+        body:JSON.stringify({
+           username,
+           email,
+           password
+        })
+      })
+
+      const data = await response.json()
+
+      if(!data.success){
+        console.log(data.message)
+      }
+
+      setUsername('')
+      setEmail('')
+      setPassword('')
+      setConfirmPassword('')
+
+      await AsyncStorage.setItem('token',data.token)
+      console.log(data)
+      navigation.navigate('Home')
+      
+    } catch (error) {
+      console.log(error)
+    }finally{
+      setLoading(false)
     }
 
   };
@@ -26,6 +69,15 @@ function Signup() {
       </View>
 
       <View style={styles.form}>
+        <Text style={styles.label}>Username</Text>
+        <TextInput 
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
+            placeholder='Enter a username'
+            keyboardType='default'
+            placeholderTextColor="#aaa"
+            />
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
@@ -56,8 +108,10 @@ function Signup() {
           placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Create Account</Text>
+        <TouchableOpacity style={styles.button} disabled={loading} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>
+            {loading ? 'Signin...':'Create Account'}
+            </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -67,8 +121,8 @@ function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f9fc',
-    padding: 20,
+    backgroundColor: '#000000',
+    padding: 25,
     justifyContent: 'center',
   },
   header: {
@@ -78,11 +132,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#222',
+   color: '#fff',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+     color: '#ececec',
     marginTop: 8,
   },
   form: {
@@ -90,8 +144,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#333',
-    marginBottom: 2,
+    color: '#fff',
+    marginBottom: 1,
     marginLeft:5
   },
   input: {
@@ -100,11 +154,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 15,
     fontSize: 16,
+     color:'#fff',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#0000',
   },
   button: {
-    backgroundColor: '#077A7D',
+    backgroundColor: '#890a83',
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
@@ -113,7 +168,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
   },
 });
 
