@@ -6,22 +6,25 @@ import Signin from './screens/Signin';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Home from './screens/Home';
 import Details from './screens/Details';
+import store from './redux/store'
+import { Provider } from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
+    <Provider store={store}>
     <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
       <Stack.Navigator>
        <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}  />
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}  />
-      
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}  />
         <Stack.Screen name="Details" component={Details} options={{ headerShown: false }}  />
       </Stack.Navigator>
     </NavigationContainer>
     </GestureHandlerRootView>
+    </Provider>
   );
 }
 

@@ -1,16 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { signinSuccess,setError } from '../redux/authSlice';
 import {useNavigation} from '@react-navigation/native'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
-function Signup() {
+function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading,setLoading] = useState(false)
   const navigation = useNavigation()
+  const dispatch = useDispatch();
   
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
 
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
@@ -32,20 +34,23 @@ function Signup() {
 
       const data = await response.json()
 
-      if(!data.message){
-        console.log(data.message)
+      if(!data.token){
+        Alert.alert("Error",data.message || "signin failed")
+        dispatch(setError(data.message))
+        return;
       }
+
+      await AsyncStorage.setItem('token',data.token)
+      dispatch(signinSuccess({token:data.token}))
 
       setEmail('')
       setPassword('')
-
-      await AsyncStorage.setItem('token',data.token)
-      console.log(data.message)
-
       navigation.navigate('Home')
 
     } catch (error) {
       console.log(error)
+      dispatch(setError(error.message));
+      Alert.alert("Error","Something went wrong.Please try again.")
     }finally{
       setLoading(false)
     }
@@ -86,6 +91,12 @@ function Signup() {
             {loading ? 'Signin...' : 'Sign In'}
           </Text>
         </TouchableOpacity>
+        <Text style={styles.account}>
+          Don't have an account?{' '}
+        <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
+          SignUp
+        </Text>
+        </Text>
       </View>
     </View>
   );
@@ -143,6 +154,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  account:{
+    color:'#ffffff',
+    paddingLeft:5
+  },
+  link:{
+    color:'#890a83',
+    cursor: 'pointer'
+  }
 });
 
-export default Signup;
+export default Signin;

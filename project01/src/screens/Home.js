@@ -1,13 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {useNavigation} from '@react-navigation/native'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { getItemSuccess,setLoading,setItemError } from '../redux/itemSlice';
+import { getUserSuccess,setError } from '../redux/authSlice';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+
 
 function Home() {
-  const[username,setUsername] = useState('')
-  const [items,setItems] = useState([])
-  const [loading,setLoading] = useState(false)
   const navigation = useNavigation()
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.auth.user)
+  const items = useSelector((state) => state.item.items);
+  const loading = useSelector((state) => state.item.loading);
+  const firstName = user?.username?.split(' ')[0];
+  
 
   useEffect(() => {
     getUserDetails();
@@ -27,22 +34,22 @@ function Home() {
       })
 
       const data = await response.json()
-      if(!data.message){
+      if(!data.success){
         console.log(data.message)
+         dispatch(setError(data.message));
+         return;
       }
 
-      setUsername(data.body.username)
-      //console.log(data.body.username)
-      console.log(data.message)
+     dispatch(getUserSuccess(data.body))
+     console.log(data.message)
     } catch (error) {
       console.log(error)
-    }finally{
-      setLoading(false)
+      dispatch(setError(error.message));
     }
   }
 
   const getItemDetails = async() => {
-    setLoading(true)
+    dispatch(setLoading())
 
     try {
       const response = await fetch('http://10.0.2.2:3000/api/item/item',{
@@ -54,12 +61,14 @@ function Home() {
 
       const data = await response.json()
       if(!data.success){
-        console.log(data.message)
+        dispatch(setItemError(data.message))
+        return;
       }
 
-      setItems(data.body.reverse())
+      dispatch(getItemSuccess(data.body.reverse()))
     } catch (error) {
       console.log(error)
+      dispatch(setItemError(error.message))
     }
   }
 
@@ -71,8 +80,11 @@ function Home() {
     <View style={styles.container}>
       <View style={styles.head}>
         <Text style={styles.title}>Hello</Text>
-        <Text style={styles.name}>{username.split(' ')[0]} !</Text>
+        <Text style={styles.name}>{firstName} !</Text>
       </View>
+      {loading ? (
+        <ActivityIndicator size='large' color='#a04a3'/>
+      ):(
       <ScrollView style={styles.cards}>
         {items.map((i, index) => (
           <TouchableOpacity style={styles.card} key={index} onPress={() => handleNavigate(i)}>
@@ -81,6 +93,7 @@ function Home() {
           </TouchableOpacity>
   ))}
 </ScrollView>
+)}
     </View>
   );
 }

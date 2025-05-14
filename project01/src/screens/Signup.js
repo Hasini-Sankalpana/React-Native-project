@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import {useNavigation} from '@react-navigation/native'
+import { useDispatch } from 'react-redux';
+import { signupSuccess} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
@@ -10,11 +12,12 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading,setLoading] = useState(false)
   const navigation = useNavigation();
+  const dispatch = useDispatch()
 
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-    if (!email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
@@ -40,21 +43,20 @@ function Signup() {
 
       const data = await response.json()
 
-      if(!data.success){
-        console.log(data.message)
+      if(!data.token){
+         Alert.alert("Error", data.message || "Signup failed");
+          dispatch(setError(data.message || 'Signup failed'));
+         return;
       }
 
-      setUsername('')
-      setEmail('')
-      setPassword('')
-      setConfirmPassword('')
-
       await AsyncStorage.setItem('token',data.token)
-      console.log(data)
+      dispatch(signupSuccess({ token: data.token }));
       navigation.navigate('Home')
       
     } catch (error) {
       console.log(error)
+       dispatch(setError(error.message));
+       Alert.alert('Error', 'Something went wrong');
     }finally{
       setLoading(false)
     }
@@ -113,6 +115,12 @@ function Signup() {
             {loading ? 'Signin...':'Create Account'}
             </Text>
         </TouchableOpacity>
+         <Text style={styles.account}>
+            Already have an account ?{' '}
+          <Text style={styles.link} onPress={() => navigation.navigate('Signin')}>
+            Signin
+          </Text>
+          </Text>
       </View>
     </View>
   );
@@ -170,6 +178,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  account:{
+    color:'#ffffff',
+    paddingLeft:5
+  },
+  link:{
+    color:'#890a83'
+  }
 });
 
 export default Signup;
