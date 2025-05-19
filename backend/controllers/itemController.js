@@ -11,7 +11,7 @@ export const listitem = async(req,res) => {
     imgURL
    })
 
-   const savedItem = await newItem.save()
+    await newItem.save()
 
    return res.status(201).json({
     success:true,

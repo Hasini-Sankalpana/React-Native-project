@@ -8,6 +8,7 @@ import Home from './screens/Home';
 import Details from './screens/Details';
 import store from './redux/store'
 import { Provider } from 'react-redux';
+import AddItems from './screens/AddItems';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,10 +18,13 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
       <Stack.Navigator>
-       <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}  />
+        <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}  />
+         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}  />
+        
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}  />
-        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}  />
         <Stack.Screen name="Details" component={Details} options={{ headerShown: false }}  />
+       
+         <Stack.Screen name="add-item" component={AddItems} options={{headerShown:false}} />
       </Stack.Navigator>
     </NavigationContainer>
     </GestureHandlerRootView>

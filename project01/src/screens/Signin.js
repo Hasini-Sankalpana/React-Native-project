@@ -1,9 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
+import { View, Text,TouchableOpacity, Alert, Linking } from 'react-native';
+import {Link, useNavigation} from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { signinSuccess,setError } from '../redux/authSlice';
-import {useNavigation} from '@react-navigation/native'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { signinUser } from '../api/auth';
+import { signinStyles } from '../css/signinStyles';
+import FormInput from '../components/FormInput'
+import { signinValidation } from '../utils/validation';
+//import LinearGradient from 'react-native-linear-gradient';
+
 
 function Signin() {
   const [email, setEmail] = useState('');
@@ -14,25 +20,15 @@ function Signin() {
   
   const handleSubmit = async () => {
 
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
-    }
+   const validate = signinValidation(email,password)
 
+   if(!validate.success){
+    Alert.alert("Error",validate.message)
+    return;
+   }
     setLoading(true)
     try {
-      const response = await fetch('http://10.0.2.2:3000/api/user/signin',{
-        method:"POST",
-        headers:{
-          'content-type':"application/json"
-        },
-        body:JSON.stringify({
-          email,
-          password
-        })
-      })
-
-      const data = await response.json()
+      const data = await signinUser(email,password)
 
       if(!data.token){
         Alert.alert("Error",data.message || "signin failed")
@@ -59,16 +55,17 @@ function Signin() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome Back!</Text>
-        <Text style={styles.subtitle}>Sign In to get started.</Text>
+    <View style={signinStyles.container}>
+       
+      <View style={signinStyles.header}>
+        <Text style={signinStyles.title}>Welcome Back!</Text>
+        <Text style={signinStyles.subtitle}>Sign In to get started.</Text>
       </View>
 
-      <View style={styles.form}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
+      <View style={signinStyles.form}>
+        <FormInput
+          style={signinStyles}
+          label="Email"
           value={email}
           onChangeText={setEmail}
           placeholder="Enter your email"
@@ -76,9 +73,9 @@ function Signin() {
           placeholderTextColor="#aaa"
         />
 
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          label='Password'
+          style={signinStyles}
           value={password}
           onChangeText={setPassword}
           placeholder="Enter your password"
@@ -86,82 +83,23 @@ function Signin() {
           placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
-          <Text style={styles.buttonText}>
+        <TouchableOpacity style={signinStyles.button} onPress={handleSubmit} disabled={loading}>
+          <Text style={signinStyles.buttonText}>
             {loading ? 'Signin...' : 'Sign In'}
           </Text>
         </TouchableOpacity>
-        <Text style={styles.account}>
+        <Text style={signinStyles.account}>
           Don't have an account?{' '}
-        <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
+        <Text style={signinStyles.link} onPress={() => navigation.navigate('Signup')}>
           SignUp
         </Text>
         </Text>
       </View>
+    
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-    padding: 20,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#ececec',
-    marginTop: 8,
-  },
-  form: {
-    gap: 20,
-  },
-  label: {
-    fontSize: 16,
-    color: '#fff',
-    marginBottom: 2,
-    marginLeft:5
-  },
-  input: {
-    height: 50,
-    backgroundColor: 'rgba(52, 52, 52, 0.8)',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    color:'#fff',
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#0000',
-  },
-  button: {
-    backgroundColor: '#890a83',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 40,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  account:{
-    color:'#ffffff',
-    paddingLeft:5
-  },
-  link:{
-    color:'#890a83',
-    cursor: 'pointer'
-  }
-});
+
 
 export default Signin;

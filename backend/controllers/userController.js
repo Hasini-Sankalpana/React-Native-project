@@ -14,6 +14,7 @@ export const getUserDetails = async (req, res) => {
         body: {
             username: user.username,
             email: user.email,
+            isAdmin:user.isAdmin
         }
     });
     }catch (error) {

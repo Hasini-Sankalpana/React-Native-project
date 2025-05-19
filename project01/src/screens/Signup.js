@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
+import { View, Text,TouchableOpacity, Alert } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
-import { useDispatch } from 'react-redux';
-import { signupSuccess} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { signupSuccess,setError} from '../redux/authSlice';
+import { signupUser } from '../api/auth';
+import { signupStyles } from '../css/signupStyles';
+import FormInput from '../components/FormInput'
+import { signupValidation } from '../utils/validation';
+
 
 function Signup() {
   const [username,setUsername] = useState('');
@@ -17,35 +22,21 @@ function Signup() {
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-    if (!username || !email || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
+    const validate = signupValidation(username,email,password,confirmPassword)
+
+    if(!validate.success){
+      Alert.alert("Error",validate.message)
       return;
     }
 
     setLoading(true)
 
     try {
-      const response = await fetch('http://10.0.2.2:3000/api/user/signup',{
-        method:"POST",
-        headers:{
-          'content-type':'application/json'
-        },
-        body:JSON.stringify({
-           username,
-           email,
-           password
-        })
-      })
-
-      const data = await response.json()
+      const data = await signupUser(username,email,password)
 
       if(!data.token){
          Alert.alert("Error", data.message || "Signup failed");
-          dispatch(setError(data.message || 'Signup failed'));
+         dispatch(setError(data.message || 'Signup failed'));
          return;
       }
 
@@ -55,8 +46,8 @@ function Signup() {
       
     } catch (error) {
       console.log(error)
-       dispatch(setError(error.message));
-       Alert.alert('Error', 'Something went wrong');
+      dispatch(setError(error.message));
+      Alert.alert('Error', 'Something went wrong');
     }finally{
       setLoading(false)
     }
@@ -64,25 +55,26 @@ function Signup() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome!</Text>
-        <Text style={styles.subtitle}>Sign up to get started</Text>
+    <View style={signupStyles.container}>
+      <View style={signupStyles.header}>
+        <Text style={signupStyles.title}>Welcome!</Text>
+        <Text style={signupStyles.subtitle}>Sign up to get started</Text>
       </View>
 
-      <View style={styles.form}>
-        <Text style={styles.label}>Username</Text>
-        <TextInput 
-            style={styles.input}
+      <View style={signupStyles.form}>
+   
+        <FormInput
+            style={signupStyles}
+            label='Username'
             value={username}
             onChangeText={setUsername}
             placeholder='Enter a username'
             keyboardType='default'
             placeholderTextColor="#aaa"
             />
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          style={signupStyles}
+          label='Email'
           value={email}
           onChangeText={setEmail}
           placeholder="Enter your email"
@@ -90,9 +82,9 @@ function Signup() {
           placeholderTextColor="#aaa"
         />
 
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          style={signupStyles}
+          label='Password'
           value={password}
           onChangeText={setPassword}
           placeholder="Enter your password"
@@ -100,9 +92,9 @@ function Signup() {
           placeholderTextColor="#aaa"
         />
 
-        <Text style={styles.label}>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
+        <FormInput
+          style={signupStyles}
+          label='Confirm Password'
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           placeholder="Re-enter your password"
@@ -110,14 +102,14 @@ function Signup() {
           placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={styles.button} disabled={loading} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>
+        <TouchableOpacity style={signupStyles.button} disabled={loading} onPress={handleSubmit}>
+          <Text style={signupStyles.buttonText}>
             {loading ? 'Signin...':'Create Account'}
             </Text>
         </TouchableOpacity>
-         <Text style={styles.account}>
+         <Text style={signupStyles.account}>
             Already have an account ?{' '}
-          <Text style={styles.link} onPress={() => navigation.navigate('Signin')}>
+          <Text style={signupStyles.link} onPress={() => navigation.navigate('Signin')}>
             Signin
           </Text>
           </Text>
@@ -126,65 +118,6 @@ function Signup() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-    padding: 25,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-   color: '#fff',
-  },
-  subtitle: {
-    fontSize: 16,
-     color: '#ececec',
-    marginTop: 8,
-  },
-  form: {
-    gap: 20,
-  },
-  label: {
-    fontSize: 16,
-    color: '#fff',
-    marginBottom: 1,
-    marginLeft:5
-  },
-  input: {
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
-     color:'#fff',
-    borderWidth: 1,
-    borderColor: '#0000',
-  },
-  button: {
-    backgroundColor: '#890a83',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  account:{
-    color:'#ffffff',
-    paddingLeft:5
-  },
-  link:{
-    color:'#890a83'
-  }
-});
+
 
 export default Signup;
