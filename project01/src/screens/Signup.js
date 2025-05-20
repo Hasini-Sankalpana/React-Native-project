@@ -12,18 +12,28 @@ import AppButton from '../components/Buttons';
 
 
 function Signup() {
-  const [username,setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formData,setFormData] = useState({
+    username:'',
+    email:'',
+    password:'',
+    confirmPassword:''
+  })
   const loading = useSelector((state) => state.auth.loading)
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  const FormInputs = [
+    {id:'username',label:'Username',placeholder:'Enter a username' ,keyboardType:"default",secureTextEntry:false},
+    {id:'email',label:'Email',placeholder:'Enter your email',keyboardType:"email-address",secureTextEntry:false},
+    {id:'password',label:'Password',placeholder:'Enter your password',keyboardType:"default",secureTextEntry:true},
+    {id:'confirmPassword',label:'Confirm Password',placeholder:'Re-enter your password',keyboardType:"default",secureTextEntry:true}
+
+  ]
+
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-    const validate = signupValidation(username,email,password,confirmPassword)
+    const validate = signupValidation(formData)
 
     if(!validate.success){
       Alert.alert("Error",validate.message)
@@ -33,7 +43,11 @@ function Signup() {
     setLoading(true)
 
     try {
-      const data = await signupUser(username,email,password)
+      const data = await signupUser({
+        username:formData.username,
+        email:formData.email,
+        password:formData.password
+      });
 
       if(!data.token){
          Alert.alert("Error", data.message || "Signup failed");
@@ -43,8 +57,12 @@ function Signup() {
 
       await AsyncStorage.setItem('token',data.token)
       dispatch(signupSuccess({ token: data.token }));
-      navigation.navigate('Home')
-      
+      setFormData({
+        username:'',
+        email:'',
+        password:'',
+        confirmPassword:''
+      })
     } catch (error) {
       console.log(error)
       dispatch(setError(error.message));
@@ -55,6 +73,13 @@ function Signup() {
 
   };
 
+  const handleChange = (fieldName,value)=> {
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]:value
+    }))
+  }
+
   return (
     <View style={signupStyles.container}>
       <View style={signupStyles.header}>
@@ -63,46 +88,20 @@ function Signup() {
       </View>
 
       <View style={signupStyles.form}>
-   
-        <FormInput
+        {FormInputs.map((input)=>(
+          <FormInput
+          key={input.id}
             style={signupStyles}
-            label='Username'
-            value={username}
-            onChangeText={setUsername}
-            placeholder='Enter a username'
-            keyboardType='default'
+            label={input.label}
+            value={formData[input.id]}
+            onChangeText={(value) => handleChange(input.id,value)}
+            placeholder={input.placeholder}
+            keyboardType={input.keyboardType}
+            secureTextEntry={input.secureTextEntry}
             placeholderTextColor="#aaa"
             />
-        <FormInput
-          style={signupStyles}
-          label='Email'
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          placeholderTextColor="#aaa"
-        />
-
-        <FormInput
-          style={signupStyles}
-          label='Password'
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Enter your password"
-          secureTextEntry
-          placeholderTextColor="#aaa"
-        />
-
-        <FormInput
-          style={signupStyles}
-          label='Confirm Password'
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="Re-enter your password"
-          secureTextEntry
-          placeholderTextColor="#aaa"
-        />
-
+        ))}
+   
         <AppButton
         title='Create Account'
         loadingTitle='Signin...'

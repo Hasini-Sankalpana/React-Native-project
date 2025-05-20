@@ -12,7 +12,7 @@ export const getItem = async () => {
 }
 
 
-export const addItem = async (title,tagline,imgURL,imdb,description) => {
+export const addItem = async ({title,tagline,imgURL,imdb,description}) => {
     try {
         const response = await axios.post('http://10.0.2.2:3000/api/item/item',{
             title,

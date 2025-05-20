@@ -10,17 +10,28 @@ import AppButton from '../components/Buttons'
 
 const AddItems = () => {
     
-    const[title,setTitle] = useState('')
-    const[tagline,setTagline] = useState('')
-    const[imgURL,setImgURL] = useState('')
-    const[imdb,setImdb] = useState('')
-    const[description,setDescription] = useState('')
+    const [formData,setFormData] = useState({
+        title:'',
+        tagline:'',
+        imgURL:'',
+        imdb:'',
+        description:''
+    });
     const [loading,setLoading] = useState(false)
     const dispatch = useDispatch()
 
+    const FormInputs = [
+        {id:'title',label:'Title' ,placeholder:'Enter the title'},
+        {id:'tagline',label:'tagline', placeholder:''},
+        {id:'imgURL',label:'Image URL'},
+        {id:'imdb' ,label:'IMDB value (out of 10)'},
+        {id:'description',label:'Description'}
+    ]
+
+
     const handleAddItem = async () => {
      
-        const validate = addItemValidation(title,tagline,imgURL,imdb,description);
+        const validate = addItemValidation(formData);
 
         if(!validate.success){
             Alert.alert("Error",validate.message)
@@ -30,20 +41,22 @@ const AddItems = () => {
      setLoading(true)
 
      try {
-        const data = await addItem(title,tagline,imgURL,imdb,description);
+        const data = await addItem(formData);
 
         if(!data.success){
             Alert.alert("Error",data.messsage)
             dispatch(setItemError(data.messsage))
         }
 
-        setTitle('')
-        setTagline('')
-        setImgURL('')
-        setImdb('')
-        setDescription('')
-
+        
         dispatch(getItemSuccess(data.body))
+        setFormData({
+        title:'',
+        tagline:'',
+        imgURL:'',
+        imdb:'',
+        description:''
+        })
         
      } catch (error) {
         console.log(error)
@@ -51,6 +64,13 @@ const AddItems = () => {
      }finally{
         setLoading(false)
     }
+    }
+
+    const handleChange = (fieldName,value) => {
+        setFormData(prev => ({
+            ...prev,
+            [fieldName]:value
+        }))
     }
 
   return (
@@ -61,41 +81,19 @@ const AddItems = () => {
             </Text>
         </View>
         <View style={addItemStyles.form}>
-            
-            <FormInput
-            style={addItemStyles}
-            label='Title'
-            value={title}
-            onChangeText={setTitle}
-            placeholder='Enter the title'
-            placeholderTextColor="#aaa"
-           />
-           <FormInput
-           style={addItemStyles}
-           label='Tagline'
-           value={tagline}
-           onChangeText={setTagline}
-           placeholderTextColor="#aaa"
-           />
-           <FormInput
-           style={addItemStyles}
-           label='Image URL'
-           value={imgURL}
-           onChangeText={setImgURL}
-           />
-           <FormInput
-           style={addItemStyles}
-           label='IMDB value (out of 10)'
-           value={imdb}
-           onChangeText={setImdb}
-           />
-           <FormInput
-           style={addItemStyles}
-           label='Description'
-           value={description}
-           onChangeText={setDescription}
-           />
 
+            {FormInputs.map((input)=>(
+                <FormInput
+                key={input.id}
+                style={addItemStyles}
+                label={input.label}
+                value={formData[input.id]}
+                onChangeText={(value) => handleChange(input.id,value)}
+                placeholder={input.placeholder}
+                placeholderTextColor="#aaa"
+           />
+            ))}
+            
            <AppButton 
             title='Add'
             loadingTitle='Adding...'

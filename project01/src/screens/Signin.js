@@ -12,15 +12,22 @@ import AppButton from '../components/Buttons';
 
 
 function Signin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData,setFormData] = useState({
+    email:'',
+    password:''
+  })
   const navigation = useNavigation()
   const loading = useSelector((state) => state.auth.loading)
   const dispatch = useDispatch();
+
+  const FormInputs = [
+    {id:'email',label:'Email',placeholder:'Enter your email',keyboardType:"email-address",secureTextEntry:false},
+    {id:'password',label:'Password',placeholder:'Enter your password',keyboardType:"default",secureTextEntry:true}
+  ]
   
   const handleSubmit = async () => {
 
-   const validate = signinValidation(email,password)
+   const validate = signinValidation(formData)
 
    if(!validate.success){
     Alert.alert("Error",validate.message)
@@ -28,7 +35,7 @@ function Signin() {
    }
     setLoading(true)
     try {
-      const data = await signinUser(email,password)
+      const data = await signinUser(formData)
 
       if(!data.token){
         Alert.alert("Error",data.message || "signin failed")
@@ -39,8 +46,10 @@ function Signin() {
       await AsyncStorage.setItem('token',data.token)
       dispatch(signinSuccess({token:data.token}))
 
-      setEmail('')
-      setPassword('')
+      setFormData({
+        email:'',
+        password:'',
+      })
 
     } catch (error) {
       console.log(error)
@@ -48,10 +57,16 @@ function Signin() {
       Alert.alert("Error","Something went wrong.Please try again.")
     }finally{
       setLoading(false)
-    }
-    
+    }  
 
   };
+
+  const handleChange = (fieldName,value) => {
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]:value
+    }))
+  }
 
   return (
     <View style={signinStyles.container}>
@@ -62,25 +77,19 @@ function Signin() {
       </View>
 
       <View style={signinStyles.form}>
-        <FormInput
+        {FormInputs.map((input)=> (
+          <FormInput
+          key={input.id}
           style={signinStyles}
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Enter your email"
-          keyboardType="email-address"
+          label={input.label}
+          value={formData[input.id]}
+          onChangeText={(value) => handleChange(input.id,value)}
+          placeholder={input.placeholder}
+          keyboardType={input.keyboardType}
+          secureTextEntry={input.secureTextEntry}
           placeholderTextColor="#aaa"
         />
-
-        <FormInput
-          label='Password'
-          style={signinStyles}
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Enter your password"
-          secureTextEntry
-          placeholderTextColor="#aaa"
-        />
+        ))}
 
         <AppButton
           title='Sign In'

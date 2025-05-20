@@ -23,7 +23,7 @@ export const addItemStyles = StyleSheet.create({
         fontWeight:500
     },
     input:{
-        color:colors.secondaryColor,
+        color:colors.textColor,
         backgroundColor:colors.backgroundColor,
         borderRadius: 10,
         paddingHorizontal: 15,
