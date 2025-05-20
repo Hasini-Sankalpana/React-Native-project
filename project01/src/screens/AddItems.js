@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import {Alert, Text,TouchableOpacity, View} from 'react-native'
+import {Alert, Text,View} from 'react-native'
+import { useDispatch } from 'react-redux'
 import { addItemStyles } from '../css/AddItemStyles'
 import { addItem } from '../api/items'
-import { useDispatch } from 'react-redux'
 import { setItemError,getItemSuccess } from '../redux/itemSlice'
 import FormInput from '../components/FormInput'
 import { addItemValidation } from '../utils/validation'
+import AppButton from '../components/Buttons'
 
 const AddItems = () => {
     
@@ -95,11 +96,15 @@ const AddItems = () => {
            onChangeText={setDescription}
            />
 
-           <TouchableOpacity style={addItemStyles.button} onPress={handleAddItem} disabled={loading}>
-            <Text style={addItemStyles.buttonText}>
-               {loading ? 'Adding...' : 'Add'}
-            </Text>
-           </TouchableOpacity>
+           <AppButton 
+            title='Add'
+            loadingTitle='Adding...'
+            style={addItemStyles}
+            textStyle={addItemStyles}
+            onPress={handleAddItem}
+            loading={loading}
+            />
+
         </View>
     </View>
   )

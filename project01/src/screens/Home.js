@@ -1,13 +1,15 @@
-import React, { useEffect} from 'react';
-import { View, Text,TouchableOpacity, ScrollView, ActivityIndicator, Image, FlatList } from 'react-native';
+import {useEffect} from 'react';
+import { View, Text,TouchableOpacity,ActivityIndicator, Image, FlatList } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getItemSuccess,setLoading,setItemError } from '../redux/itemSlice';
 import { getUserSuccess,setError,logout } from '../redux/authSlice';
 import { getUser } from '../api/user';
 import { getItem } from '../api/items';
 import {homeStyles} from '../css/homeStyles'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppButton from '../components/Buttons';
+
 
 
 function Home() {
@@ -84,11 +86,16 @@ function Home() {
           {isAdmin ? (
           <Text style={homeStyles.headIconText}onPress={()=> navigation.navigate('add-item')}>+</Text>
           ):('')}
-          <TouchableOpacity style={homeStyles.button} onPress={handleLogout}>
-            <Text style={homeStyles.buttonText}>
-              Logout
-            </Text>
-          </TouchableOpacity>
+       
+          <AppButton
+           title='Logout'
+           loadingTitle='Logout'
+           style={homeStyles}
+           textStyle={homeStyles}
+           onPress={handleLogout}
+           loading={loading}
+           />
+
         </View>
       </View>
      

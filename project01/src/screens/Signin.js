@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import { View, Text,TouchableOpacity, Alert, Linking } from 'react-native';
-import {Link, useNavigation} from '@react-navigation/native'
+import  { useState } from 'react';
+import { View, Text,Alert} from 'react-native';
+import {useNavigation} from '@react-navigation/native'
+import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
-import { signinSuccess,setError } from '../redux/authSlice';
+import { signinSuccess,setError,setLoading } from '../redux/authSlice';
 import { signinUser } from '../api/auth';
 import { signinStyles } from '../css/signinStyles';
 import FormInput from '../components/FormInput'
 import { signinValidation } from '../utils/validation';
-//import LinearGradient from 'react-native-linear-gradient';
+import AppButton from '../components/Buttons';
 
 
 function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading,setLoading] = useState(false)
   const navigation = useNavigation()
+  const loading = useSelector((state) => state.auth.loading)
   const dispatch = useDispatch();
   
   const handleSubmit = async () => {
@@ -82,11 +82,14 @@ function Signin() {
           placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={signinStyles.button} onPress={handleSubmit} disabled={loading}>
-          <Text style={signinStyles.buttonText}>
-            {loading ? 'Signin...' : 'Sign In'}
-          </Text>
-        </TouchableOpacity>
+        <AppButton
+          title='Sign In'
+          loadingTitle='Signin...'
+          style={signinStyles}
+          textStyle={signinStyles}
+          loading={loading}
+          onPress={handleSubmit}
+        />
         <Text style={signinStyles.account}>
           Don't have an account?{' '}
         <Text style={signinStyles.link} onPress={() => navigation.navigate('Signup')}>

@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
-import { View, Text,TouchableOpacity, Alert } from 'react-native';
+import { View, Text,Alert } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
-import { signupSuccess,setError} from '../redux/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupSuccess,setError,setLoading} from '../redux/authSlice';
 import { signupUser } from '../api/auth';
 import { signupStyles } from '../css/signupStyles';
 import FormInput from '../components/FormInput'
 import { signupValidation } from '../utils/validation';
+import AppButton from '../components/Buttons';
 
 
 function Signup() {
@@ -15,9 +16,9 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading,setLoading] = useState(false)
+  const loading = useSelector((state) => state.auth.loading)
   const navigation = useNavigation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -102,11 +103,15 @@ function Signup() {
           placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={signupStyles.button} disabled={loading} onPress={handleSubmit}>
-          <Text style={signupStyles.buttonText}>
-            {loading ? 'Signin...':'Create Account'}
-            </Text>
-        </TouchableOpacity>
+        <AppButton
+        title='Create Account'
+        loadingTitle='Signin...'
+         style={signupStyles}
+         loading={loading}
+         onPress={handleSubmit}
+         textStyle={signupStyles}
+        />
+
          <Text style={signupStyles.account}>
             Already have an account ?{' '}
           <Text style={signupStyles.link} onPress={() => navigation.navigate('Signin')}>
