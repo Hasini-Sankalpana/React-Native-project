@@ -14,7 +14,7 @@ export const addItemStyles = StyleSheet.create({
     headText:{
         fontSize:30,
         fontWeight:500,
-        color:colors.textColor
+        color:colors.textColor,
     },
     label:{
         fontSize:15,
@@ -23,11 +23,12 @@ export const addItemStyles = StyleSheet.create({
     },
     input:{
         color:colors.secondaryColor,
-        backgroundColor:colors.inputBackgroundColor,
+        backgroundColor:colors.backgroundColor,
         borderRadius: 10,
         paddingHorizontal: 15,
         fontSize: 16,
-        borderWidth: 1,
+        borderBottomColor:colors.primaryColor,
+        borderBottomWidth:1,
         borderColor:colors.borderColor,
     },
     button:{

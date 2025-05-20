@@ -83,7 +83,7 @@ const AddItems = () => {
            onChangeText={setImgURL}
            />
            <FormInput
-           style={addItemStyles.input}
+           style={addItemStyles}
            label='IMDB value (out of 10)'
            value={imdb}
            onChangeText={setImdb}

@@ -3,10 +3,11 @@ import { View, Text,TouchableOpacity, ScrollView, ActivityIndicator, Image, Flat
 import {useNavigation} from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux';
 import { getItemSuccess,setLoading,setItemError } from '../redux/itemSlice';
-import { getUserSuccess,setError } from '../redux/authSlice';
+import { getUserSuccess,setError,logout } from '../redux/authSlice';
 import { getUser } from '../api/user';
 import { getItem } from '../api/items';
 import {homeStyles} from '../css/homeStyles'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function Home() {
@@ -66,6 +67,12 @@ function Home() {
     navigation.navigate('Details',{item})
   }
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token')
+    dispatch(logout());
+    navigation.navigate('Signin')
+  }
+
   return (
     <View style={homeStyles.container}>
       <View style={homeStyles.head}>
@@ -73,10 +80,17 @@ function Home() {
         <Text style={homeStyles.title}>Hello</Text>
         <Text style={homeStyles.name}>{firstName} !👋</Text>
         </View>
-        {isAdmin ? (
+        
         <View style={homeStyles.headIcon}>
+          {isAdmin ? (
           <Text style={homeStyles.headIconText}onPress={()=> navigation.navigate('add-item')}>+</Text>
-        </View>) :('')}
+          ):('')}
+          <TouchableOpacity style={homeStyles.button} onPress={handleLogout}>
+            <Text style={homeStyles.buttonText}>
+              Logout
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
      
       {loading ? (
@@ -87,7 +101,8 @@ function Home() {
         data={items}
         keyExtractor={(item, index) => index.toString()}
         numColumns={3}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        showsVerticalScrollIndicator={false}
+        columnWrapperStyle={{ justifyContent: 'space-arround' }}
         renderItem={({ item }) => (
     <TouchableOpacity style={homeStyles.card} onPress={() => handleNavigate(item)}>
       <Image style={homeStyles.img} source={{ uri: item.imgURL }} />

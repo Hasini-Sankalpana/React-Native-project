@@ -8,12 +8,18 @@ export const homeStyles = StyleSheet.create({
     paddingBottom:50,
     paddingHorizontal:30,
     gap: 40,
-    backgroundColor:colors.backgroundColor
+    backgroundColor:colors.backgroundColor,
+    minHeight:'100%'
   },
   head:{
    display:'flex',
    flexDirection:'row',
    justifyContent:"space-between"
+  },
+  headIcon:{
+   display:'flex',
+   flexDirection:'row',
+   gap:8
   },
   headText:{
     display:'flex',
@@ -39,10 +45,10 @@ export const homeStyles = StyleSheet.create({
   cards:{
     display:'flex',
     flexDirection:'row',
-    flexWrap:'wrap'
+    flexWrap:'wrap',
   },
   card:{
-    backgroundColor:colors.secondaryColor,
+    backgroundColor:colors.cardColor,
     width:110,
     height:150,
     borderRadius:10,
@@ -51,6 +57,7 @@ export const homeStyles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'left',
     marginTop:20,
+    marginRight:10
   },
   cardtitle:{
     fontSize:12,
@@ -69,4 +76,14 @@ export const homeStyles = StyleSheet.create({
     marginVertical:5,
     marginHorizontal:5
   },
+  button:{
+    backgroundColor:colors.primaryColor,
+    paddingVertical:4,
+    paddingHorizontal:8,
+    borderRadius:5,
+    alignSelf:"center"
+  },
+  buttonText:{
+    color:colors.textColor
+  }
 });
