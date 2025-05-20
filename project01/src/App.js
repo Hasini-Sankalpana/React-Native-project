@@ -19,7 +19,7 @@ function AppNavigator() {
   const [loading, setLoading] = useState(true);
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-  
+
 
   useEffect(() => {
     const checkToken = async () => {
@@ -30,6 +30,7 @@ function AppNavigator() {
         }
       } catch (error) {
         console.log('Error reading token', error);
+        await AsyncStorage.removeItem('token');
       } finally {
         setLoading(false);
       }
@@ -47,7 +48,7 @@ function AppNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}  initialRouteName={token ? "Home" : "Signin"} >
         {token ? (
           <>
             <Stack.Screen name="Home" component={Home} />

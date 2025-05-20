@@ -41,7 +41,6 @@ function Signin() {
 
       setEmail('')
       setPassword('')
-      navigation.replace('Home')
 
     } catch (error) {
       console.log(error)

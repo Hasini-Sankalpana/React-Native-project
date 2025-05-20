@@ -70,7 +70,6 @@ function Home() {
   const handleLogout = async () => {
     await AsyncStorage.removeItem('token')
     dispatch(logout());
-    navigation.navigate('Signin')
   }
 
   return (
