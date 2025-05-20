@@ -42,7 +42,6 @@ export const signinStyles = StyleSheet.create({
     fontSize: 16,
     borderBottomColor:colors.primaryColor,
     borderBottomWidth:1,
-    borderColor:colors.borderColor,
   },
   button: {
     backgroundColor: colors.primaryColor,
