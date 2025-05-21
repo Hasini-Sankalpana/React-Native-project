@@ -11,7 +11,6 @@ import {homeStyles} from '../css/homeStyles'
 import AppButton from '../components/Buttons';
 
 
-
 function Home() {
   const navigation = useNavigation()
   const dispatch = useDispatch()
@@ -29,7 +28,8 @@ function Home() {
 
 
   const getUserDetails = async() =>{
-    setLoading(true)
+    dispatch(setLoading(true))
+
     try {
       const data = await getUser();
 
@@ -44,6 +44,8 @@ function Home() {
     } catch (error) {
       console.log(error)
       dispatch(setError(error.message));
+    }finally{
+      dispatch(setLoading(false));
     }
   }
 
@@ -109,7 +111,7 @@ function Home() {
         numColumns={3}
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={{ justifyContent: 'space-arround' }}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => (  
     <TouchableOpacity style={homeStyles.card} onPress={() => handleNavigate(item)}>
       <Image style={homeStyles.img} source={{ uri: item.imgURL }} />
       <Text style={homeStyles.cardtitle}>{item.title}</Text>

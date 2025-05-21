@@ -40,7 +40,7 @@ function Signup() {
       return;
     }
 
-    setLoading(true)
+    dispatch(setLoading(true))
 
     try {
       const data = await signupUser({
@@ -68,7 +68,7 @@ function Signup() {
       dispatch(setError(error.message));
       Alert.alert('Error', 'Something went wrong');
     }finally{
-      setLoading(false)
+          dispatch(setLoading(false))
     }
 
   };
@@ -104,7 +104,7 @@ function Signup() {
    
         <AppButton
         title='Create Account'
-        loadingTitle='Signin...'
+        loadingTitle='Signing Up...'
          style={signupStyles}
          loading={loading}
          onPress={handleSubmit}

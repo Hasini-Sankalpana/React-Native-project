@@ -33,7 +33,8 @@ function Signin() {
     Alert.alert("Error",validate.message)
     return;
    }
-    setLoading(true)
+    dispatch(setLoading(true))
+
     try {
       const data = await signinUser(formData)
 
@@ -56,7 +57,8 @@ function Signin() {
       dispatch(setError(error.message));
       Alert.alert("Error","Something went wrong.Please try again.")
     }finally{
-      setLoading(false)
+         dispatch(setLoading(false))
+
     }  
 
   };
