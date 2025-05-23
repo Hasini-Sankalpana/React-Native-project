@@ -1,41 +1,56 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import { View, Text,TouchableOpacity,ActivityIndicator, Image, FlatList } from 'react-native';
-import {useNavigation} from '@react-navigation/native'
-import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getItemSuccess,setLoading,setItemError } from '../redux/itemSlice';
-import { getUserSuccess,setError,logout } from '../redux/authSlice';
+import {useNavigation} from '@react-navigation/native';
+import AppButton from '../components/Buttons';
 import { getUser } from '../api/user';
 import { getItem } from '../api/items';
-import {homeStyles} from '../css/homeStyles'
-import AppButton from '../components/Buttons';
+import { HomeConstants } from '../constants/TextConstant';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getItemSuccess,setItemError,setItemLoading } from '../redux/itemSlice';
+import { getUserSuccess,setUserError,logout,setUserLoading } from '../redux/authSlice';
+import { styles } from '../css/Styles';
 
 
 function Home() {
-  const navigation = useNavigation()
-  const dispatch = useDispatch()
-  const user = useSelector((state) => state.auth.user)
   const items = useSelector((state) => state.item.items);
-  const loading = useSelector((state) => state.item.loading);
+  const user = useSelector((state) => state.auth.user);
   const firstName = user?.username?.split(' ')[0];
-  const isAdmin = user?.isAdmin
+  const isAdmin = user?.isAdmin;
+  const [loading,setLoading] = useState(false)
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const home = styles.home;
+
+  //const itemLoading = useSelector((state) => state.item.loading);
+  //const userLoading = useSelector((state) => state.auth.loading);
+  
+ 
+  //const loading = itemLoading || userLoading;
   
 
   useEffect(() => {
-    getUserDetails();
-    getItemDetails();
-  },[])
+  const loadAllData = async () => {
+      try {  
+        await getUserDetails();
+        await getItemDetails();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
+    loadAllData();
+  }, []);
 
   const getUserDetails = async() =>{
-    dispatch(setLoading(true))
+  dispatch(setUserLoading(true))
 
     try {
       const data = await getUser();
 
       if(!data.success){
         console.log(data.message)
-        dispatch(setError(data.message));
+        dispatch(setUserError(data.message));
         return;
       }
 
@@ -43,15 +58,15 @@ function Home() {
      console.log(data.message)
     } catch (error) {
       console.log(error)
-      dispatch(setError(error.message));
+      dispatch(setUserError(error.message));
     }finally{
-      dispatch(setLoading(false));
+      dispatch(setUserLoading(false));
     }
   }
 
   const getItemDetails = async() => {
-    dispatch(setLoading())
-
+   
+   setLoading(true)
     try {
       const data = await getItem();
 
@@ -59,11 +74,13 @@ function Home() {
         dispatch(setItemError(data.message))
         return;
       }
-
-      dispatch(getItemSuccess(data.body.reverse()))
+      dispatch(getItemSuccess([...data.body].reverse()));
+      console.log(data.message)
     } catch (error) {
       console.log(error)
       dispatch(setItemError(error.message))
+    }finally{
+         setLoading(false)
     }
   }
 
@@ -77,45 +94,45 @@ function Home() {
   }
 
   return (
-    <View style={homeStyles.container}>
-      <View style={homeStyles.head}>
-        <View style={homeStyles.headText}>
-        <Text style={homeStyles.title}>Hello</Text>
-        <Text style={homeStyles.name}>{firstName} !👋</Text>
+    <View style={home.container}>
+      <View style={home.head}>
+        <View style={home.headText}>
+        <Text style={home.title}>{HomeConstants.title}</Text>
+        <Text style={home.name}>{firstName} !👋</Text>
         </View>
         
-        <View style={homeStyles.headIcon}>
+        <View style={home.headIcon}>
           {isAdmin ? (
-          <Text style={homeStyles.headIconText}onPress={()=> navigation.navigate('add-item')}>+</Text>
+          <Text style={home.headIconText}onPress={()=> navigation.navigate('add-item')}>+</Text>
           ):('')}
        
           <AppButton
-           title='Logout'
-           loadingTitle='Logout'
-           style={homeStyles}
-           textStyle={homeStyles}
+           title={HomeConstants.button}
+           loadingTitle={HomeConstants.button}
+           style={home}
+           textStyle={home}
            onPress={handleLogout}
            loading={loading}
            />
 
         </View>
       </View>
-     
+      {/* {error && <Text color='ffffff'>{error}</Text>}*/} 
       {loading ? (
         <ActivityIndicator size='large' color='#a04a3'/>
       ):(
 
      <FlatList
         data={items}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         numColumns={3}
         showsVerticalScrollIndicator={false}
-        columnWrapperStyle={{ justifyContent: 'space-arround' }}
+        columnWrapperStyle={{ justifyContent: 'space-around' }}
         renderItem={({ item }) => (  
-    <TouchableOpacity style={homeStyles.card} onPress={() => handleNavigate(item)}>
-      <Image style={homeStyles.img} source={{ uri: item.imgURL }} />
-      <Text style={homeStyles.cardtitle}>{item.title}</Text>
-      <Text style={homeStyles.cardsubtitle}>{item.imdb}</Text>
+    <TouchableOpacity style={home.card} onPress={() => handleNavigate(item)}>
+      <Image style={home.img} source={{ uri: item.imgURL }} />
+      <Text style={home.cardtitle}>{item.title}</Text>
+      <Text style={home.cardsubtitle}>{item.imdb}</Text>
     </TouchableOpacity>
   )}
 />

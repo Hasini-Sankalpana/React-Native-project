@@ -1,89 +1,96 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../constants/colors";
-
+import { colors } from "./colors";
+import { commonStyles } from "./CommonStyles";
 
 export const homeStyles = StyleSheet.create({
   container: {
+    ...commonStyles.container,
     paddingTop: 70,
-    paddingBottom:50,
-    paddingHorizontal:30,
-    gap: 40,
-    backgroundColor:colors.backgroundColor,
-    minHeight:'100%'
+    paddingBottom: 50,
+    paddingHorizontal: 20,
+    minHeight: '100%',
+    backgroundColor: colors.backgroundColor,
   },
-  head:{
-   display:'flex',
-   flexDirection:'row',
-   justifyContent:"space-between"
+  head: {
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  headIcon:{
-   display:'flex',
-   flexDirection:'row',
-   gap:8
+  headIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
-  headText:{
-    display:'flex',
-    flexDirection:'row',
-    paddingLeft:10,
-    gap:10,
-    alignContent:'center',
+  headText: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap:5
   },
-  headIconText:{
-   color:colors.textColor,
-   fontSize:30,
+  headIconText: {
+    color: colors.textColor,
+    fontSize: 32,
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
   },
-  title:{
-    fontSize:30,
-    color:colors.textColor
+  title: {
+    fontSize: 26,
+    color: colors.textColor,
+    fontWeight: '600',
+  },
+  name: {
+    fontSize: 28,
+    color: colors.primaryColor,
+    fontWeight: '700',
+  },
+  cards: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  card: {
+  backgroundColor: colors.cardColor, 
+  width: 110,
+  height: 160,
+  borderRadius: 10,
+  padding: 8,
+  marginBottom: 20,
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.1, 
+  shadowRadius: 6,
+  elevation: 4,
+},
 
+  img: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    resizeMode: 'cover',
+    marginBottom: 8,
   },
-  name:{
-    fontSize:30,
-    color:colors.primaryColor,
-    fontWeight:700
+  cardtitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: colors.cardTitle,
+    textAlign: 'center',
+    marginBottom: 2,
   },
-  cards:{
-    display:'flex',
-    flexDirection:'row',
-    flexWrap:'wrap',
+  cardsubtitle: {
+    fontSize: 11,
+    color: colors.cardSubTitle,
+    textAlign: 'center',
   },
-  card:{
-    backgroundColor:colors.cardColor,
-    width:110,
-    height:150,
-    borderRadius:10,
-    padding:10,
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'left',
-    marginTop:20,
-    marginRight:10
+  button: {
+    ...commonStyles.button,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginLeft: 8,
   },
-  cardtitle:{
-    fontSize:12,
-    fontWeight:'bold',
-    color:colors.cardTitle,
-    marginTop:5
-  },
-  cardsubtitle:{
-    fontSize:10,
-    color:colors.cardSubTitle
-  },
-   img:{
-    width:80,
-    height:80,
-    resizeMode:'cover',
-    marginVertical:5,
-    marginHorizontal:5
-  },
-  button:{
-    backgroundColor:colors.primaryColor,
-    paddingVertical:4,
-    paddingHorizontal:8,
-    borderRadius:5,
-    alignSelf:"center"
-  },
-  buttonText:{
-    color:colors.textColor
+  buttonText: {
+    ...commonStyles.buttonText,
+    fontSize: 16,
   }
 });

@@ -1,8 +1,9 @@
 import axios from "axios"
+import { BASE_URL } from "../constants/ApiConstant";
 
 export const getItem = async () => {
     try {
-        const response = await axios.get('http://10.0.2.2:3000/api/item/item')
+        const response = await axios.get(`${BASE_URL}/api/item/item`)
 
        return response.data;
     } catch (error) {
@@ -14,7 +15,7 @@ export const getItem = async () => {
 
 export const addItem = async ({title,tagline,imgURL,imdb,description}) => {
     try {
-        const response = await axios.post('http://10.0.2.2:3000/api/item/item',{
+        const response = await axios.post(`${BASE_URL}/api/item/item`,{
             title,
             tagline,
             imgURL,

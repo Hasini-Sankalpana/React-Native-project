@@ -10,6 +10,7 @@ const FormInput  = ({
     multiline=false,
     numberOfLines=1,
     style,
+    placeholderTextColor
 }) => {
 
 
@@ -25,6 +26,7 @@ const FormInput  = ({
           keyboardType={keyboardType}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          placeholderTextColor={placeholderTextColor}
           />
     </View>
   )

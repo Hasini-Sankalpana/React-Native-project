@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import { View, Text,Alert } from 'react-native';
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native';
+import FormInput from '../components/FormInput'
+import AppButton from '../components/Buttons';
+import { signupUser } from '../api/auth';
+import { signupValidation } from '../utils/validation';
+import { SignupConstants } from '../constants/TextConstant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupSuccess,setError,setLoading} from '../redux/authSlice';
-import { signupUser } from '../api/auth';
-import { signupStyles } from '../css/signupStyles';
-import FormInput from '../components/FormInput'
-import { signupValidation } from '../utils/validation';
-import AppButton from '../components/Buttons';
+import { signupSuccess,setUserError,setUserLoading} from '../redux/authSlice';
+import { styles } from '../css/Styles';
+
 
 
 function Signup() {
@@ -21,6 +23,7 @@ function Signup() {
   const loading = useSelector((state) => state.auth.loading)
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const signup = styles.signup;
 
   const FormInputs = [
     {id:'username',label:'Username',placeholder:'Enter a username' ,keyboardType:"default",secureTextEntry:false},
@@ -40,7 +43,7 @@ function Signup() {
       return;
     }
 
-    dispatch(setLoading(true))
+    dispatch(setUserLoading(true))
 
     try {
       const data = await signupUser({
@@ -51,7 +54,7 @@ function Signup() {
 
       if(!data.token){
          Alert.alert("Error", data.message || "Signup failed");
-         dispatch(setError(data.message || 'Signup failed'));
+         dispatch(setUserError(data.message || 'Signup failed'));
          return;
       }
 
@@ -65,12 +68,11 @@ function Signup() {
       })
     } catch (error) {
       console.log(error)
-      dispatch(setError(error.message));
+      dispatch(setUserError(error.message));
       Alert.alert('Error', 'Something went wrong');
     }finally{
-          dispatch(setLoading(false))
+          dispatch(setUserLoading(false))
     }
-
   };
 
   const handleChange = (fieldName,value)=> {
@@ -81,17 +83,17 @@ function Signup() {
   }
 
   return (
-    <View style={signupStyles.container}>
-      <View style={signupStyles.header}>
-        <Text style={signupStyles.title}>Welcome!</Text>
-        <Text style={signupStyles.subtitle}>Sign up to get started</Text>
+    <View style={signup.container}>
+      <View style={signup.header}>
+        <Text style={signup.title}>{SignupConstants.title}</Text>
+        <Text style={signup.subtitle}>{SignupConstants.subtitle}</Text>
       </View>
 
-      <View style={signupStyles.form}>
+      <View style={signup.form}>
         {FormInputs.map((input)=>(
           <FormInput
           key={input.id}
-            style={signupStyles}
+            style={signup}
             label={input.label}
             value={formData[input.id]}
             onChangeText={(value) => handleChange(input.id,value)}
@@ -103,25 +105,24 @@ function Signup() {
         ))}
    
         <AppButton
-        title='Create Account'
-        loadingTitle='Signing Up...'
-         style={signupStyles}
+        title={SignupConstants.button}
+        loadingTitle={SignupConstants.buttonLoading}
+         style={signup}
          loading={loading}
          onPress={handleSubmit}
-         textStyle={signupStyles}
+         textStyle={signup}
         />
 
-         <Text style={signupStyles.account}>
-            Already have an account ?{' '}
-          <Text style={signupStyles.link} onPress={() => navigation.navigate('Signin')}>
-            Signin
+         <Text style={signup.account}>
+            {SignupConstants.account}{' '}
+          <Text style={signup.link} onPress={() => navigation.navigate('Signin')}>
+            {SignupConstants.link}
           </Text>
           </Text>
       </View>
     </View>
   );
 }
-
 
 
 export default Signup;

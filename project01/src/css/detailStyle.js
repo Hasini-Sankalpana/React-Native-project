@@ -1,13 +1,14 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../constants/colors";
+import { colors } from "./colors";
+import { commonStyles } from "./CommonStyles";
 
 
 export const detailStyles = StyleSheet.create({
   container: {
+    ...commonStyles.container,
     flex: 1,
     paddingTop: 70,
     paddingLeft:30,
-    backgroundColor:colors.backgroundColor
   },
   title:{
     fontSize:30,

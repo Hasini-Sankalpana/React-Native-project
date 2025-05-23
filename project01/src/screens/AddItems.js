@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import {Alert, Text,View} from 'react-native'
 import { useDispatch } from 'react-redux'
-import { addItemStyles } from '../css/AddItemStyles'
-import { addItem } from '../api/items'
-import { setItemError,getItemSuccess } from '../redux/itemSlice'
-import FormInput from '../components/FormInput'
-import { addItemValidation } from '../utils/validation'
 import AppButton from '../components/Buttons'
+import FormInput from '../components/FormInput'
+import { addItem } from '../api/items'
+import { addItemValidation } from '../utils/validation'
+import { AddItemConstants } from '../constants/TextConstant'
+import { setItemError,getItemSuccess } from '../redux/itemSlice'
+import { styles } from '../css/Styles'
 
 const AddItems = () => {
     
@@ -19,6 +20,7 @@ const AddItems = () => {
     });
     const [loading,setLoading] = useState(false)
     const dispatch = useDispatch()
+    const item = styles.item;
 
     const FormInputs = [
         {id:'title',label:'Title' ,placeholder:'Enter the title'},
@@ -74,18 +76,18 @@ const AddItems = () => {
     }
 
   return (
-    <View style={addItemStyles.container}>
-        <View style={addItemStyles.head}>
-            <Text style={addItemStyles.headText}>
-                Add Movies
+    <View style={item.container}>
+        <View style={item.head}>
+            <Text style={item.headText}>
+                {AddItemConstants.headText}
             </Text>
         </View>
-        <View style={addItemStyles.form}>
+        <View style={item.form}>
 
             {FormInputs.map((input)=>(
                 <FormInput
                 key={input.id}
-                style={addItemStyles}
+                style={item}
                 label={input.label}
                 value={formData[input.id]}
                 onChangeText={(value) => handleChange(input.id,value)}
@@ -95,10 +97,10 @@ const AddItems = () => {
             ))}
             
            <AppButton 
-            title='Add'
-            loadingTitle='Adding...'
-            style={addItemStyles}
-            textStyle={addItemStyles}
+            title={AddItemConstants.button}
+            loadingTitle={AddItemConstants.buttonLoading}
+            style={item}
+            textStyle={item}
             onPress={handleAddItem}
             loading={loading}
             />

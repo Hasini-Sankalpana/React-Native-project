@@ -1,12 +1,14 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../constants/colors";
+import { colors } from "./colors";
+import { commonStyles } from "./CommonStyles";
 
 export const addItemStyles = StyleSheet.create({
     container:{
+        ...commonStyles.container,
         flex:1,
         paddingVertical:70,
         paddingHorizontal:30,
-        backgroundColor:colors.backgroundColor
+
     },
     head:{
         marginBottom:20,
@@ -17,30 +19,18 @@ export const addItemStyles = StyleSheet.create({
         color:colors.textColor,
     },
     label:{
-        fontSize:15,
+       ...commonStyles.label,
         marginVertical:10,
-        color:colors.textColor,
-        fontWeight:500
     },
     input:{
-        color:colors.textColor,
-        backgroundColor:colors.backgroundColor,
-        borderRadius: 10,
-        paddingHorizontal: 15,
-        fontSize: 16,
-        borderBottomColor:colors.primaryColor,
-        borderBottomWidth:1,
+       ...commonStyles.input
     },
     button:{
-        backgroundColor:colors.primaryColor,
+        ...commonStyles.button,
         marginTop:50,
         paddingVertical:14,
-        borderRadius:10,
-        alignItems:'center',
     },
     buttonText:{
-        color: colors.textColor,
-        fontWeight: 'bold',
-        fontSize: 18,   
+       ...commonStyles.buttonText
     }
 })

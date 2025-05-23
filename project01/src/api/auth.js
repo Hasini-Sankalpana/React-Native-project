@@ -1,8 +1,9 @@
 import axios from 'axios'
+import { BASE_URL } from '../constants/ApiConstant';
 
 export const signupUser = async({username,email,password})=>{
     try {
-        const response = await axios.post('http://10.0.2.2:3000/api/user/signup',{
+        const response = await axios.post(`${BASE_URL}/api/user/signup`,{
            username,
            email,
            password
@@ -18,7 +19,7 @@ export const signupUser = async({username,email,password})=>{
 export const signinUser = async ({email,password}) => {
     
     try {
-        const response = await axios.post('http://10.0.2.2:3000/api/user/signin',{
+        const response = await axios.post(`${BASE_URL}/api/user/signin`,{
           email,
           password
         })

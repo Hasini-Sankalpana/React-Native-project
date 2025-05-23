@@ -10,7 +10,7 @@ const itemSlice = createSlice ({
     name:'item',
     initialState,
     reducers:{
-        setLoading:(state)=> {
+        setItemLoading:(state)=> {
             state.loading = true;
             state.error =null
         },
@@ -19,13 +19,12 @@ const itemSlice = createSlice ({
             state.error = action.payload;
         },
         getItemSuccess:(state,action) => {
-            state.loading = false;
             state.items = action.payload;
         }
 
     }
 })
 
-export const {setLoading,setItemError,getItemSuccess} = itemSlice.actions
+export const {setItemLoading,setItemError,getItemSuccess} = itemSlice.actions
 
 export default itemSlice.reducer;
