@@ -20,7 +20,7 @@ export const SignupConstants = {
 
 export const HomeConstants = {
     title:'Hello',
-    button:'Logout',
+    button:'Settings',
 }
 
 
@@ -28,4 +28,11 @@ export const AddItemConstants = {
     headText:'Add Movies',
     button:'Add',
     buttonLoading:'Adding...'
+}
+
+export const SettingConstants = {
+    headerText:'Settings',
+    settingText:'Light Mode',
+    button:'Logout',
+    buttonLoading:'Login out...'
 }

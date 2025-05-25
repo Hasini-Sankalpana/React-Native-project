@@ -1,40 +1,44 @@
 import { StyleSheet } from "react-native";
-import { colors } from "./colors";
 import { commonStyles } from "./CommonStyles";
 
-
-export const detailStyles = StyleSheet.create({
+export const detailStyles = (theme) => StyleSheet.create({
   container: {
-    ...commonStyles.container,
+    ...commonStyles.container(theme), 
     flex: 1,
     paddingTop: 70,
-    paddingLeft:30,
+    paddingLeft: 30,
+    paddingRight: 20,
   },
-  title:{
-    fontSize:30,
-    color:colors.cardTitle,
-    fontWeight:500,
+  title: {
+    fontSize: 30,
+    color: theme.primaryColor, 
+    fontWeight: '500', 
+    marginBottom: 10, 
   },
-  tagline:{
-    fontSize:15,
-    marginBottom:20,
-    color:colors.cardSubTitle
+  tagline: {
+    fontSize: 15,
+    marginBottom: 20,
+    color: theme.cardSubTitle || theme.subTextColor, 
+    fontStyle: 'italic',
   },
-  img:{
-    width:350,
-    height:350,
-    resizeMode:'cover',
-    marginBottom:30
+  img: {
+    width: '100%', 
+    height: 350,
+    resizeMode: 'cover',
+    marginBottom: 30,
+    borderRadius: 10, 
   },
-  imdb:{
-    fontSize:20,
-    marginBottom:15,
-    color:'#e4f17f'
+  imdb: {
+    fontSize: 20,
+    marginBottom: 15,
+    color: theme.primaryColor, 
+    fontWeight: 'bold',
   },
-  description:{
-    fontSize:15,
-    paddingRight:40,
-    textAlign:'justify',
-    color:colors.textColor
+  description: {
+    fontSize: 15,
+    paddingRight: 20, 
+    textAlign: 'justify',
+    color: theme.textColor, 
+    lineHeight: 22, 
   }
-})
+});

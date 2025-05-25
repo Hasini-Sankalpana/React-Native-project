@@ -1,15 +1,17 @@
-import  { useState } from 'react';
+import  { useContext, useState } from 'react';
 import { View, Text,Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormInput from '../components/FormInput'
 import AppButton from '../components/Buttons';
 import { signinUser } from '../api/auth';
 import { signinValidation } from '../utils/validation';
 import { SigninConstants } from '../constants/TextConstant';
 import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signinSuccess,setUserError,setUserLoading } from '../redux/authSlice';
+import { ThemeContext } from '../ThemeProvider';
 import { styles } from '../css/Styles';
+
 
 
 function Signin() {
@@ -20,7 +22,9 @@ function Signin() {
   const navigation = useNavigation()
   const loading = useSelector((state) => state.auth.loading)
   const dispatch = useDispatch();
-  const signin = styles.signin;
+  const themeColors = useContext(ThemeContext);
+  const signin = styles.signin(themeColors);
+
 
   const FormInputs = [
     {id:'email',label:'Email',placeholder:'Enter your email',keyboardType:"email-address",secureTextEntry:false},

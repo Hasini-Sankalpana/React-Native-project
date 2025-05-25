@@ -32,6 +32,7 @@ const authSlice = createSlice({
       state.user = null;
       state.error = null;
       state.token = null;
+      state.loading=false;
     }
   },
 });

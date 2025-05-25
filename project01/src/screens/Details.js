@@ -1,12 +1,15 @@
+import { useContext } from 'react';
 import { View, Text, Image } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import { ThemeContext } from '../ThemeProvider';
 import { styles } from '../css/Styles';
 
 
 function Details() {
   const route = useRoute();
   const { item } = route.params;
-  const detail = styles.details
+   const themeColors = useContext(ThemeContext);
+    const detail = styles.details(themeColors);
 
 
     return (

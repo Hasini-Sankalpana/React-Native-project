@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, Text,Alert } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormInput from '../components/FormInput'
 import AppButton from '../components/Buttons';
 import { signupUser } from '../api/auth';
 import { signupValidation } from '../utils/validation';
 import { SignupConstants } from '../constants/TextConstant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupSuccess,setUserError,setUserLoading} from '../redux/authSlice';
+import { ThemeContext } from '../ThemeProvider';
 import { styles } from '../css/Styles';
+
 
 
 
@@ -23,7 +25,9 @@ function Signup() {
   const loading = useSelector((state) => state.auth.loading)
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const signup = styles.signup;
+   const themeColors = useContext(ThemeContext); 
+  const signup = styles.signup(themeColors); 
+
 
   const FormInputs = [
     {id:'username',label:'Username',placeholder:'Enter a username' ,keyboardType:"default",secureTextEntry:false},

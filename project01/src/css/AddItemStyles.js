@@ -1,36 +1,80 @@
 import { StyleSheet } from "react-native";
-import { colors } from "./colors";
 import { commonStyles } from "./CommonStyles";
 
-export const addItemStyles = StyleSheet.create({
-    container:{
-        ...commonStyles.container,
-        flex:1,
-        paddingVertical:70,
-        paddingHorizontal:30,
-
-    },
-    head:{
-        marginBottom:20,
-    },
-    headText:{
-        fontSize:30,
-        fontWeight:500,
-        color:colors.textColor,
-    },
-    label:{
-       ...commonStyles.label,
-        marginVertical:10,
-    },
-    input:{
-       ...commonStyles.input
-    },
-    button:{
-        ...commonStyles.button,
-        marginTop:50,
-        paddingVertical:14,
-    },
-    buttonText:{
-       ...commonStyles.buttonText
-    }
-})
+export const addItemStyles = (theme) => StyleSheet.create({
+  container: {
+    ...commonStyles.container(theme),
+    flex: 1,
+    paddingVertical: 40,
+    paddingHorizontal: 25,
+  },
+  head: {
+    marginBottom: 30,
+    alignItems: 'center',
+  },
+  headText: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: theme.textColor,
+    letterSpacing: 0.5,
+    textShadowColor: theme.primaryColor + '40',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 10,
+  },
+  form: {
+    gap: 20,
+    marginTop: 10,
+  },
+  label: {
+    ...commonStyles.label(theme),
+    marginVertical: 8,
+    fontSize: 16,
+    letterSpacing: 0.3,
+    marginLeft: 5,
+  },
+  input: {
+    ...commonStyles.input(theme),
+    height: 52,
+    borderRadius: 12,
+    paddingHorizontal: 18,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: theme.primaryColor + '30', 
+    shadowColor: theme.primaryColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  button: {
+    ...commonStyles.button(theme),
+    marginTop: 40,
+    paddingVertical: 16,
+    borderRadius: 12,
+    shadowColor: theme.primaryColor,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
+    transform: [{ scale: 1 }], 
+  },
+  buttonText: {
+    ...commonStyles.buttonText(theme),
+    fontSize: 18,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  floatingLabel: {
+    position: 'absolute',
+    left: 15,
+    top: -10,
+    backgroundColor: theme.backgroundColor,
+    paddingHorizontal: 5,
+    zIndex: 1,
+    fontSize: 14,
+    color: theme.primaryColor,
+  },
+});

@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import { View, Text,TouchableOpacity,ActivityIndicator, Image, FlatList } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AppButton from '../components/Buttons';
@@ -6,10 +6,11 @@ import { getUser } from '../api/user';
 import { getItem } from '../api/items';
 import { HomeConstants } from '../constants/TextConstant';
 import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getItemSuccess,setItemError,setItemLoading } from '../redux/itemSlice';
-import { getUserSuccess,setUserError,logout,setUserLoading } from '../redux/authSlice';
+import { ThemeContext } from '../ThemeProvider';
+import { getItemSuccess,setItemError} from '../redux/itemSlice';
+import { getUserSuccess,setUserError,setUserLoading } from '../redux/authSlice';
 import { styles } from '../css/Styles';
+
 
 
 function Home() {
@@ -20,7 +21,8 @@ function Home() {
   const [loading,setLoading] = useState(false)
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const home = styles.home;
+  const themeColors = useContext(ThemeContext); 
+  const home = styles.home(themeColors); 
 
   //const itemLoading = useSelector((state) => state.item.loading);
   //const userLoading = useSelector((state) => state.auth.loading);
@@ -88,17 +90,13 @@ function Home() {
     navigation.navigate('Details',{item})
   }
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('token')
-    dispatch(logout());
-  }
-
   return (
     <View style={home.container}>
       <View style={home.head}>
         <View style={home.headText}>
         <Text style={home.title}>{HomeConstants.title}</Text>
         <Text style={home.name}>{firstName} !👋</Text>
+      
         </View>
         
         <View style={home.headIcon}>
@@ -106,15 +104,14 @@ function Home() {
           <Text style={home.headIconText}onPress={()=> navigation.navigate('add-item')}>+</Text>
           ):('')}
        
-          <AppButton
+           <AppButton
            title={HomeConstants.button}
            loadingTitle={HomeConstants.button}
            style={home}
            textStyle={home}
-           onPress={handleLogout}
-           loading={loading}
+           onPress={()=> navigation.navigate('settings')}
            />
-
+          
         </View>
       </View>
       {/* {error && <Text color='ffffff'>{error}</Text>}*/} 
