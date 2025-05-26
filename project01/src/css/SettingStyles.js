@@ -57,4 +57,9 @@ export const settingStyles = (theme) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  settingSubText: {
+  fontSize: 12,
+  color: theme.subTextColor,
+  marginTop: 4,
+}
 });

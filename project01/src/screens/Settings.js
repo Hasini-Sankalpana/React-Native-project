@@ -1,30 +1,46 @@
-import { useContext } from 'react';
-import { View, Text, Switch } from 'react-native';
+import { useContext, useEffect } from 'react';
+import { View, Text, Switch, useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppButton from '../components/Buttons';
 import { SettingConstants } from '../constants/TextConstant';
 import { logout } from '../redux/authSlice';
-import { useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThemeContext } from '../ThemeProvider';
-import { setTheme } from '../redux/themeSlice';
+import { setTheme, setResolvedTheme } from '../redux/themeSlice';
 import { styles } from '../css/Styles';
-
 
 const Settings = () => {
   const dispatch = useDispatch();
-  const theme = useSelector((state) => state.theme.theme);
+  const colorScheme = useColorScheme();
+  const { theme, resolvedTheme } = useSelector((state) => state.theme);
   const themeColors = useContext(ThemeContext);
   const settings = styles.settings(themeColors);
+
+
+  useEffect(() => {
+    const newResolvedTheme = theme === 'system' ? colorScheme : theme;
+    dispatch(setResolvedTheme(newResolvedTheme));
+  }, [theme, colorScheme, dispatch]);
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('token');
     dispatch(logout());
   };
 
-  const handleToggle = async() => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
+  const handleToggle = async () => {
+    let newTheme;
+    if (theme === 'system') {
+      newTheme = 'light'; 
+    } else if (theme === 'light') {
+      newTheme = 'dark'; 
+    } else {
+      newTheme = 'system'; 
+    }
     dispatch(setTheme(newTheme));
-  }
+  };
+
+ 
+  const switchValue = theme !== 'system' && theme === 'dark';
 
   return (
     <View style={settings.container}>
@@ -35,12 +51,15 @@ const Settings = () => {
       <View style={settings.settingItem}>
         <View style={settings.settingLeft}>
           <Text style={settings.settingText}>{SettingConstants.settingText}</Text>
+          <Text style={settings.settingSubText}>
+            Current: {theme === 'system' ? `System (${colorScheme})` : theme}
+          </Text>
         </View>
         <Switch
           trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={theme === 'dark' ? '#f4f3f4' : '#f5dd4b' }
+          thumbColor={resolvedTheme === 'dark' ? '#f4f3f4' : '#f5dd4b'}
           onValueChange={handleToggle}
-          value={theme === 'light'}
+          value={switchValue}
         />
       </View>
 

@@ -68,7 +68,7 @@ function Home() {
   }
 
   const getItemDetails = async() => {
-   
+
    setLoading(true)
     try {
       const data = await getItem();

@@ -32,7 +32,7 @@ export const AddItemConstants = {
 
 export const SettingConstants = {
     headerText:'Settings',
-    settingText:'Light Mode',
+    settingText:'Dark Mode',
     button:'Logout',
     buttonLoading:'Login out...'
 }

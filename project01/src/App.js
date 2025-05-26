@@ -24,7 +24,7 @@ const Stack = createNativeStackNavigator();
 function AppNavigator() {
   const [loading, setLoading] = useState(true);
   const token = useSelector((state) => state.auth.token);
-  const theme = useSelector((state) => state.theme.theme);
+  const { resolvedTheme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -58,7 +58,7 @@ function AppNavigator() {
 
   return (
     <ThemeProvider>
-      <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
+      <NavigationContainer theme={resolvedTheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={token ? "Home" : "Signin"}>
           {token ? (
             <>
