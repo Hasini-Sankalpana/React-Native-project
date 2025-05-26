@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BASE_URL } from "../constants/ApiConstant";
+import { useSelector } from "react-redux";
 
  
  export const getUser = async() => {
@@ -12,6 +13,7 @@ import { BASE_URL } from "../constants/ApiConstant";
           'Authorization':`Bearer ${token}`
         }
       })
+
 
       return response.data;
 

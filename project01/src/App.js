@@ -14,6 +14,7 @@ import store from './redux/store';
 import { ThemeProvider } from './ThemeProvider';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { signinSuccess } from './redux/authSlice';
+import { setTheme } from './redux/themeSlice';
 
 
 

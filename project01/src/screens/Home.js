@@ -58,6 +58,7 @@ function Home() {
 
      dispatch(getUserSuccess(data.body))
      console.log(data.message)
+     
     } catch (error) {
       console.log(error)
       dispatch(setUserError(error.message));
